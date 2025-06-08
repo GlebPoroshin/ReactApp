@@ -1,0 +1,143 @@
+.task-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 400px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.column-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.add-task-button {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+}
+
+.add-task-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.add-task-button:active {
+    transform: scale(0.95);
+    background-color: #3d8b40;
+}
+
+.tasks-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 4px;
+    min-height: 100px; /* Минимальная высота для дропзоны */
+    transition: background-color 0.2s ease;
+}
+
+/* Стили для droppable зоны */
+.tasks-container.dragging-over {
+    background-color: rgba(76, 175, 80, 0.05);
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.tasks-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tasks-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+.tasks-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+}
+
+.tasks-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.25);
+}
+
+/* Адаптивная верстка для разных экранов */
+@media (max-width: 1200px) {
+    .task-column {
+        max-width: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .task-column {
+        max-width: 500px;
+        width: 100%;
+        min-height: auto;
+        margin-bottom: 20px;
+        border-radius: 16px;
+    }
+    
+    .column-header {
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .column-title {
+        font-size: 20px;
+    }
+    
+    .tasks-container {
+        max-height: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .task-column {
+        padding: 16px 12px;
+        margin-bottom: 16px;
+        border-radius: 12px;
+    }
+    
+    .column-header {
+        padding-bottom: 10px;
+        margin-bottom: 12px;
+    }
+    
+    .add-task-button {
+        width: 30px;
+        height: 30px;
+        font-size: 18px;
+    }
+}
+
