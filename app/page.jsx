@@ -1,71 +1,52 @@
- "use client"
+"use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useEffect } from "react"
 import TaskBoard from "./components/TaskBoard"
 import "./globals.css"
 
 export default function App() {
-  const initialTasks = [
-    {
-      id: 1,
-      title: "CRM system design",
-      participant: "Azhar",
-      dateAdded: "12/04/2021",
-      priority: "medium",
-      status: "todo",
-    },
-    {
-      id: 2,
-      title: "Statistics Dashboard",
-      participant: "Artur",
-      dateAdded: "12/04/2021",
-      priority: "low",
-      status: "todo",
-    },
-    {
-      id: 3,
-      title: "Priority Management",
-      participant: "Adyl, Artur",
-      dateAdded: "12/04/2021",
-      priority: "high",
-      status: "todo",
-    },
-    {
-      id: 4,
-      title: "Push Notifications",
-      participant: "Artur",
-      dateAdded: "12/04/2021",
-      priority: "low",
-      status: "in-progress",
-    },
-    {
-      id: 5,
-      title: "Task Categories",
-      participant: "Adyl",
-      dateAdded: "12/04/2021",
-      priority: "low",
-      status: "in-progress",
-    },
-    {
-      id: 6,
-      title: "UI/UX Redesign",
-      participant: "Azhar",
-      dateAdded: "12/04/2021",
-      priority: "low",
-      status: "frozen",
-    },
-  ]
-
-  const [tasks, setTasks] = useState(initialTasks)
+  const [tasks, setTasks] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        setIsLoading(true)
+        const response = await fetch("/api/tasks")
+        
+        if (!response.ok) {
+          throw new Error(`Ошибка загрузки задач: ${response.status}`)
+        }
+        
+        const data = await response.json()
+        
+        if (data.success && data.tasks) {
+          setTasks(data.tasks)
+        } else {
+          console.warn("Не удалось получить задачи с сервера")
+          setTasks([])
+        }
+      } catch (error) {
+        console.error("Ошибка при загрузке задач:", error)
+        setError("Не удалось загрузить задачи с сервера")
+        
+        setTasks([])
+        
+        setTimeout(() => setError(null), 3000)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    fetchTasks()
+  }, [])
+  
   const sendToBackend = useCallback(async (taskData, action) => {
     try {
       setIsLoading(true)
       setError(null)
-
-      // ТУТ API
+      
       const response = await fetch("/api/tasks", {
         method: "POST",
         headers: {
@@ -88,7 +69,7 @@ export default function App() {
       console.error("Error sending to backend:", error)
       setError("Failed to sync with server. Changes saved locally.")
 
-      // Show error for 3 seconds then hide
+      // Показать ошибку на 3 секунды, затем скрыть
       setTimeout(() => setError(null), 3000)
     } finally {
       setIsLoading(false)
@@ -107,7 +88,7 @@ export default function App() {
         let action
 
         if (existingTaskIndex !== -1) {
-          // Update existing task
+          // Обновить существующую задачу
           const existingTask = tasks[existingTaskIndex]
           updatedTask = {
             ...taskData,
@@ -123,7 +104,7 @@ export default function App() {
             return newTasks
           })
         } else {
-          // CСоздаем задачу
+          // Создаем задачу
           updatedTask = {
             ...taskData,
             id: taskId,

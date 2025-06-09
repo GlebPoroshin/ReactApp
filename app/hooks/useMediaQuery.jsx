@@ -8,28 +8,28 @@ export function useMediaQuery(query) {
   useEffect(() => {
     const media = window.matchMedia(query)
 
-    // Set initial value
+    // Установка начального значения
     setMatches(media.matches)
 
-    // Create listener function
+    // Создание функции-слушателя
     const listener = (event) => {
       setMatches(event.matches)
     }
 
-    // Add listener
+    // Добавление слушателя
     if (media.addEventListener) {
       media.addEventListener("change", listener)
     } else {
-      // Fallback for older browsers
+      // Запасной вариант для старых браузеров
       media.addListener(listener)
     }
 
-    // Cleanup
+    // Очистка
     return () => {
       if (media.removeEventListener) {
         media.removeEventListener("change", listener)
       } else {
-        // Fallback for older browsers
+        // Запасной вариант для старых браузеров
         media.removeListener(listener)
       }
     }

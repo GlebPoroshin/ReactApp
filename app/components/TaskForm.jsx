@@ -21,7 +21,7 @@ const TaskForm = ({ onAddTask, currentStatus, editingTask = null }) => {
       setIsEditMode(true)
       console.log("TaskForm: Set edit mode, task id:", editingTask.id)
     } else {
-      // Reset form for new task
+      // Сброс формы для новой задачи
       setTitle("")
       setPriority("low")
       setParticipants("")
@@ -29,7 +29,7 @@ const TaskForm = ({ onAddTask, currentStatus, editingTask = null }) => {
       setTaskId(null)
     }
 
-    // Clear errors when switching modes
+    // Очистка ошибок при переключении режимов
     setErrors({})
   }, [editingTask])
 
@@ -90,7 +90,7 @@ const TaskForm = ({ onAddTask, currentStatus, editingTask = null }) => {
       console.log("TaskForm: Submitting task data:", taskData)
       onAddTask(taskData)
 
-      // Reset form
+      // Сброс формы
       setTitle("")
       setPriority("low")
       setParticipants("")

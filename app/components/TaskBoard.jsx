@@ -13,7 +13,7 @@ const TaskBoard = ({ tasks, onAddTask, isLoading = false }) => {
   const [isDraggingTask, setIsDraggingTask] = useState(false)
   const boardRef = useRef(null)
 
-  // Responsive breakpoints
+  // Адаптивные контрольные точки
   const isMobile = useMediaQuery("(max-width: 768px)")
   const isTablet = useMediaQuery("(min-width: 769px) and (max-width: 1024px)")
   const isDesktop = useMediaQuery("(min-width: 1025px)")
@@ -29,24 +29,28 @@ const TaskBoard = ({ tasks, onAddTask, isLoading = false }) => {
   const [showColumnForm, setShowColumnForm] = useState(false)
   const [newColumnTitle, setNewColumnTitle] = useState("")
 
-  // Memoized column tasks to prevent unnecessary re-renders
+  // Мемоизированные задачи колонки для предотвращения ненужных перерисовок
   const getColumnTasks = useCallback(
     (columnId) => {
-      return tasks.filter((task) => task.status === columnId)
+        const filteredTasks = tasks.filter((task) => task.status === columnId)
+        return filteredTasks.sort((a, b) => {
+        const priorityOrder = { high: 3, medium: 2, low: 1 }
+        return priorityOrder[b.priority] - priorityOrder[a.priority]
+      })
     },
     [tasks],
   )
 
-  // Responsive column display logic
+  // Логика адаптивного отображения колонок
   const getVisibleColumns = useMemo(() => {
-    // All layouts show all columns, but arranged differently
+    // Все макеты показывают все колонки, но организованы по-разному
     return columns
   }, [columns])
 
-  // Enhanced horizontal scrolling for desktop/tablet
+  // Улучшенная горизонтальная прокрутка для десктопа/планшета
   useEffect(() => {
     const slider = boardRef.current
-    if (!slider || isMobile) return
+    if (!slider || !isDesktop) return
 
     let isDown = false
     let startX
@@ -93,12 +97,12 @@ const TaskBoard = ({ tasks, onAddTask, isLoading = false }) => {
       slider.removeEventListener("mouseup", handleMouseUp)
       slider.removeEventListener("mousemove", handleMouseMove)
     }
-  }, [isDraggingTask, isMobile])
+  }, [isDraggingTask, isDesktop])
 
-  // Add touch event handlers for mobile/tablet drag support
+  // Добавление обработчиков тач-событий для поддержки перетаскивания на мобильных/планшетах
   useEffect(() => {
     const handleTouchStart = (e) => {
-      // Prevent default touch behavior during drag operations
+      // Предотвращение стандартного поведения касания во время операций перетаскивания
       if (isDraggingTask) {
         e.preventDefault()
       }
@@ -196,7 +200,7 @@ const TaskBoard = ({ tasks, onAddTask, isLoading = false }) => {
 
       const { source, destination, draggableId } = result
 
-      // Check if dropped outside or in same position
+      // Проверка, было ли перетаскивание за пределы или в ту же позицию
       if (!destination || (source.droppableId === destination.droppableId && source.index === destination.index)) {
         return
       }
@@ -209,7 +213,7 @@ const TaskBoard = ({ tasks, onAddTask, isLoading = false }) => {
         return
       }
 
-      // Check for duplicate titles in destination column
+      // Проверка на дублирование заголовков в целевой колонке
       const tasksInDestination = tasks.filter((t) => t.status === destination.droppableId)
       const hasDuplicate = tasksInDestination.some(
         (t) => t.id !== taskId && t.title.toLowerCase() === task.title.toLowerCase(),
@@ -221,7 +225,7 @@ const TaskBoard = ({ tasks, onAddTask, isLoading = false }) => {
         return
       }
 
-      // Update task status
+      // Обновление статуса задачи
       const updatedTask = {
         ...task,
         status: destination.droppableId,
@@ -233,7 +237,7 @@ const TaskBoard = ({ tasks, onAddTask, isLoading = false }) => {
     [tasks, columns, onAddTask],
   )
 
-  // Get responsive class names
+  // Получение адаптивных имен классов
   const getBoardClassName = () => {
     let baseClass = "task-board"
 
@@ -306,7 +310,7 @@ const TaskBoard = ({ tasks, onAddTask, isLoading = false }) => {
 
       {/* Main Board */}
       <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-        <div ref={boardRef} className={`board-columns-wrapper ${!isMobile ? "scrollable" : ""}`}>
+        <div ref={boardRef} className={`board-columns-wrapper ${isDesktop ? "scrollable" : ""}`}>
           <div className={getColumnsClassName()}>
             {getVisibleColumns.map((column) => (
               <TaskColumn

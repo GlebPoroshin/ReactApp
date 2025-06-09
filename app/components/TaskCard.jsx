@@ -82,10 +82,10 @@ const TaskCard = ({
   }
 
   useEffect(() => {
-    // Enable touch events for drag and drop on mobile/tablet
+    // Включение тач-событий для перетаскивания на мобильных/планшетах
     const enableTouch = () => {
       if ("ontouchstart" in window) {
-        // Touch device detected - ensure drag and drop works
+        // Обнаружено сенсорное устройство - обеспечиваем работу перетаскивания
         return true
       }
       return false
@@ -107,7 +107,7 @@ const TaskCard = ({
           aria-label={`Task: ${title}`}
           style={{
             ...provided.draggableProps.style,
-            // Ensure touch events work properly
+            // Обеспечиваем правильную работу тач-событий
             touchAction: "none",
             userSelect: "none",
           }}
